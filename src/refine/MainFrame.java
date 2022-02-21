@@ -3,6 +3,8 @@ package refine;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -30,7 +32,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		"spell","still","study","their","there",
 		"these","thing","think","three","water",
 		"where","which","world","would","write"};
-	private String[] result; 
+	private ArrayList<String> result = new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -128,11 +130,64 @@ public class MainFrame extends JFrame implements ActionListener {
 		return texts;
 	}
 	
-	//絞り込みをする
-	public void refine() {
+	//リストをテキストとして返す
+	public String output(ArrayList<String> lists) {
+		//テキストエリアに返す用の変数を定義
+		String texts = "";
+		for(String str : lists) {
+			// \r\n で改行を表す
+			texts += str +"\r\n";
+		}
+		return texts;
+	}
+	
+	//『テキストフィールドが空のとき』という条件式
+	public boolean is_blank(JTextField tf){
+		return tf.getText().equals("");
+	}
+	
+	//絞り込む（175行からで使用)
+	public void refine(JTextField tf, int x) {
+		String str = tf.getText();
+		//入力した物を１文字１文字わけて、配列strArrayに入れる
+		String[] strArray = str.split("");
+		//分けた文字１つ１つと、AllWords１つ１つをそれぞれ次の条件で比較
+		for(String s : strArray) {
+			for(String word : AllWords) {
+				//文字とAllwordsの単語のx文字目が一致していれば、リストresultに追加していく。
+				if ( s.equals(String.valueOf(word.charAt(x-1))) ) {
+					result.add(word);		
+				}
+			}
+		}
+	}
+	
+	//絞り込んで結果を出す
+	public void outputResult() {
 		//テキストフィールドに何も入力されていなければすべて（AllWords）を表示
-		if ((tf_char1.getText().equals("")) && (tf_char2.getText().equals("")) && (tf_char3.getText().equals("")) && (tf_char4.getText().equals("")) && (tf_char5.getText().equals(""))) {
+		if ( (is_blank(tf_char1)) && (is_blank(tf_char2)) && (is_blank(tf_char3)) && (is_blank(tf_char4)) && (is_blank(tf_char5)) ) {
 			outputArea.setText(output(AllWords));		
+		}
+		else {
+			//配列resultを一度初期化
+			result = new ArrayList<String>();
+			if ( !(is_blank(tf_char1)) ) {
+				refine(tf_char1, 1);
+			}
+			if ( !(is_blank(tf_char2)) ) {
+				refine(tf_char2, 2);
+			}
+			if ( !(is_blank(tf_char3)) ) {
+				refine(tf_char3, 3);
+			}
+			if ( !(is_blank(tf_char4)) ) {
+				refine(tf_char4, 4);
+			}
+			if ( !(is_blank(tf_char4)) ) {
+				refine(tf_char5, 5);
+			}
+			//すべての処理が終わったら、setTextで出力
+			outputArea.setText(output(result));
 		}
 	}
 	
@@ -142,7 +197,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	    String command = ( String ) e.getActionCommand();	
 	    //「絞り込み」ボタンを押された時
 	    if (command.equals("refine")) {
-	    	refine();
+	    	outputResult();
 	    }	
 	}
 }
