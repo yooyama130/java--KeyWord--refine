@@ -1,18 +1,19 @@
 package refine;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JButton;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JTextField tf_char1;
@@ -20,6 +21,16 @@ public class MainFrame extends JFrame {
 	private JTextField tf_char3;
 	private JTextField tf_char4;
 	private JTextField tf_char5;
+	private JTextArea outputArea;
+	private String[] AllWords = 
+		{"about","after","again","below","could",
+		"every","first","found","great","house",
+		"large","learn","never","other","place",
+		"plant","point","right","small","sound",
+		"spell","still","study","their","there",
+		"these","thing","think","three","water",
+		"where","which","world","would","write"};
+	private String[] result; 
 
 	/**
 	 * Launch the application.
@@ -94,17 +105,44 @@ public class MainFrame extends JFrame {
 		scrollPane.setBounds(311, 24, 150, 361);
 		contentPane.add(scrollPane);
 		
-		JTextArea outputArea = new JTextArea();
+		outputArea = new JTextArea();
+		outputArea.setText(output(AllWords));
+		outputArea.setEditable(false);
 		scrollPane.setViewportView(outputArea);
-		outputArea.setRows(2);
-		outputArea.setColumns(2);
-		outputArea.setText(
-				"about\r\nafter\r\nagain\r\nbelow\r\ncould\r\n"
-				+ "every\r\nfirst\r\nfound\r\ngreat\r\nhouse\r\n"
-				+ "large\r\nlearn\r\nnever\r\nother\r\nplace\r\n"
-				+ "plant\r\npoint\r\nright\r\nsmall\r\nsound\r\n"
-				+ "spell\r\nstill\r\nstudy\r\ntheir\r\nthere\r\n"
-				+ "these\r\nthing\r\nthink\r\nthree\r\nwater\r\n"
-				+ "where\r\nwhich\r\nworld\r\nwould\r\nwrite");
+		
+		JButton refineButton = new JButton("絞り込む");
+		refineButton.setBounds(81, 268, 87, 21);
+	    refineButton.addActionListener(this);
+	    refineButton.setActionCommand("refine");
+		contentPane.add(refineButton);
+	}
+	
+	//配列として定義した文字列をテキストとして返す（109行目で使っている）
+	public String output(String[] words) {
+		//テキストエリアに返す用の変数を定義
+		String texts = "";
+		for(String str : words) {
+			// \r\n で改行を表す
+			texts += str +"\r\n";
+		}
+		return texts;
+	}
+	
+	//絞り込みをする
+	public void refine() {
+		//テキストフィールドに何も入力されていなければすべて（AllWords）を表示
+		if ((tf_char1.getText().equals("")) && (tf_char2.getText().equals("")) && (tf_char3.getText().equals("")) && (tf_char4.getText().equals("")) && (tf_char5.getText().equals(""))) {
+			outputArea.setText(output(AllWords));		
+		}
+	}
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	    String command = ( String ) e.getActionCommand();	
+	    //「絞り込み」ボタンを押された時
+	    if (command.equals("refine")) {
+	    	refine();
+	    }	
 	}
 }
