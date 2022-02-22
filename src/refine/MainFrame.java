@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Font;
 
 public class MainFrame extends JFrame implements ActionListener {
 
@@ -32,7 +36,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		"spell","still","study","their","there",
 		"these","thing","think","three","water",
 		"where","which","world","would","write"};
-	private ArrayList<String> result = new ArrayList<String>();
+	private List<String> result = new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -117,6 +121,12 @@ public class MainFrame extends JFrame implements ActionListener {
 	    refineButton.addActionListener(this);
 	    refineButton.setActionCommand("refine");
 		contentPane.add(refineButton);
+		
+		JLabel label_notice = new JLabel("※１文字目から順に入力しないと正しい結果が出ません。");
+		label_notice.setFont(new Font("MS UI Gothic", Font.PLAIN, 11));
+		label_notice.setForeground(Color.RED);
+		label_notice.setBounds(30, 320, 271, 34);
+		contentPane.add(label_notice);
 	}
 	
 	//配列として定義した文字列をテキストとして返す（109行目で使っている）
@@ -131,7 +141,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	}
 	
 	//リストをテキストとして返す
-	public String output(ArrayList<String> lists) {
+	public String output(List<String> lists) {
 		//テキストエリアに返す用の変数を定義
 		String texts = "";
 		for(String str : lists) {
@@ -146,46 +156,52 @@ public class MainFrame extends JFrame implements ActionListener {
 		return tf.getText().equals("");
 	}
 	
-	//絞り込む（175行からで使用)
-	public void refine(JTextField tf, int x) {
-		String str = tf.getText();
-		//入力した物を１文字１文字わけて、配列strArrayに入れる
-		String[] strArray = str.split("");
-		//分けた文字１つ１つと、AllWords１つ１つをそれぞれ次の条件で比較
-		for(String s : strArray) {
-			for(String word : AllWords) {
-				//文字とAllwordsの単語のx文字目が一致していれば、リストresultに追加していく。
-				if ( s.equals(String.valueOf(word.charAt(x-1))) ) {
-					result.add(word);		
+	
+	//絞り込む（175行から使用)
+	public void refine() {
+		//テキストフィールドに入力された文字を文字列strXとしてそれぞれ受け取る
+		String str1 = tf_char1.getText();
+		String str2 = tf_char2.getText();
+		String str3 = tf_char3.getText();
+		String str4 = tf_char4.getText();
+		String str5 = tf_char5.getText();
+		//入力した物を１文字１文字分けたものを、配列strArrayXとしてそれぞれ入れる
+		String[] strArray1 = str1.split("");
+		String[] strArray2 = str2.split("");
+		String[] strArray3 = str3.split("");
+		String[] strArray4 = str4.split("");
+		String[] strArray5 = str5.split("");
+		//分けた文字をそれぞれすべて見ていく
+		for(String c1 : strArray1) {
+			for(String c2 : strArray2) {
+				for(String c3 : strArray3) {
+					for(String c4 : strArray4) {
+						for(String c5 : strArray5) {
+							for(String word : AllWords) {
+								//分けた文字をあわせたものから始まるwordをリストresultに追加していく
+								if ( word.startsWith(c1+c2+c3+c4+c5)) {
+									result.add(word);	
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 	
-	//絞り込んで結果を出す
+	//絞り込んで結果を出す（絞り込むボタンの処理）
 	public void outputResult() {
 		//テキストフィールドに何も入力されていなければすべて（AllWords）を表示
 		if ( (is_blank(tf_char1)) && (is_blank(tf_char2)) && (is_blank(tf_char3)) && (is_blank(tf_char4)) && (is_blank(tf_char5)) ) {
 			outputArea.setText(output(AllWords));		
 		}
 		else {
-			//配列resultを一度初期化
+			//リストresultを一度初期化
 			result = new ArrayList<String>();
-			if ( !(is_blank(tf_char1)) ) {
-				refine(tf_char1, 1);
-			}
-			if ( !(is_blank(tf_char2)) ) {
-				refine(tf_char2, 2);
-			}
-			if ( !(is_blank(tf_char3)) ) {
-				refine(tf_char3, 3);
-			}
-			if ( !(is_blank(tf_char4)) ) {
-				refine(tf_char4, 4);
-			}
-			if ( !(is_blank(tf_char4)) ) {
-				refine(tf_char5, 5);
-			}
+			//java.lang.UnsupportedOperationException: removeというエラーが出たので以下に変更
+			//result= new LinkedList(Arrays.asList(AllWords));
+			refine();
 			//すべての処理が終わったら、setTextで出力
 			outputArea.setText(output(result));
 		}
