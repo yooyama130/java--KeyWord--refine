@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -28,6 +26,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private JTextField tf_char4;
 	private JTextField tf_char5;
 	private JTextArea outputArea;
+	private JLabel label_result;
 	private String[] AllWords = 
 		{"about","after","again","below","could",
 		"every","first","found","great","house",
@@ -127,9 +126,13 @@ public class MainFrame extends JFrame implements ActionListener {
 		label_notice.setForeground(Color.RED);
 		label_notice.setBounds(30, 320, 271, 34);
 		contentPane.add(label_notice);
+		
+		label_result = new JLabel("結果："+ 35 +" / 35");
+		label_result.setBounds(471, 30, 77, 13);
+		contentPane.add(label_result);
 	}
 	
-	//配列として定義した文字列をテキストとして返す（109行目で使っている）
+	//配列として定義した文字列をテキストとして返す（113行目で使用）
 	public String output(String[] words) {
 		//テキストエリアに返す用の変数を定義
 		String texts = "";
@@ -140,7 +143,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		return texts;
 	}
 	
-	//リストをテキストとして返す
+	//リストをテキストとして返す（202行目で使用)
 	public String output(List<String> lists) {
 		//テキストエリアに返す用の変数を定義
 		String texts = "";
@@ -151,13 +154,13 @@ public class MainFrame extends JFrame implements ActionListener {
 		return texts;
 	}
 	
-	//『テキストフィールドが空のとき』という条件式
+	//『テキストフィールドが空のとき』という条件式(194行目で使用)
 	public boolean is_blank(JTextField tf){
 		return tf.getText().equals("");
 	}
 	
 	
-	//絞り込む（175行から使用)
+	//絞り込む（202行目で使用)
 	public void refine() {
 		//テキストフィールドに入力された文字を文字列strXとしてそれぞれ受け取る
 		String str1 = tf_char1.getText();
@@ -194,16 +197,16 @@ public class MainFrame extends JFrame implements ActionListener {
 	public void outputResult() {
 		//テキストフィールドに何も入力されていなければすべて（AllWords）を表示
 		if ( (is_blank(tf_char1)) && (is_blank(tf_char2)) && (is_blank(tf_char3)) && (is_blank(tf_char4)) && (is_blank(tf_char5)) ) {
-			outputArea.setText(output(AllWords));		
+			outputArea.setText(output(AllWords));
+			label_result.setText("結果："+ 35 +" / 35");
 		}
 		else {
 			//リストresultを一度初期化
 			result = new ArrayList<String>();
-			//java.lang.UnsupportedOperationException: removeというエラーが出たので以下に変更
-			//result= new LinkedList(Arrays.asList(AllWords));
 			refine();
 			//すべての処理が終わったら、setTextで出力
 			outputArea.setText(output(result));
+			label_result.setText("結果："+ result.size() +" / 35");
 		}
 	}
 	
