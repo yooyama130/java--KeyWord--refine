@@ -121,12 +121,6 @@ public class MainFrame extends JFrame implements ActionListener {
 	    refineButton.setActionCommand("refine");
 		contentPane.add(refineButton);
 		
-		JLabel label_notice = new JLabel("※１文字目から順に入力しないと正しい結果が出ません。");
-		label_notice.setFont(new Font("MS UI Gothic", Font.PLAIN, 11));
-		label_notice.setForeground(Color.RED);
-		label_notice.setBounds(30, 320, 271, 34);
-		contentPane.add(label_notice);
-		
 		label_result = new JLabel("結果："+ 35 +" / 35");
 		label_result.setBounds(471, 30, 77, 13);
 		contentPane.add(label_result);
@@ -181,9 +175,18 @@ public class MainFrame extends JFrame implements ActionListener {
 					for(String c4 : strArray4) {
 						for(String c5 : strArray5) {
 							for(String word : AllWords) {
+								//c1~c5それぞれが空白、あるいはスペースありなら正規表現[a-z]を代入
+								//contains()、startsWith()は、単に引数として渡された文字列が含まれている or 文字列で始まるかどうかを返します。 
+								//一方、 matches()は正規表現を引数として受け取り、同じパターンの文字列であればtrueを返します。
+								if(c1.equals("") | c1.equals(" ")) { c1 = "[a-z]";}
+								if(c2.equals("") | c2.equals(" ")) { c2 = "[a-z]";}	
+								if(c3.equals("") | c3.equals(" ")) { c3 = "[a-z]";}
+								if(c4.equals("") | c4.equals(" ")) { c4 = "[a-z]";}
+								if(c5.equals("") | c5.equals(" ")) { c5 = "[a-z]";}
+								System.out.println(c1+c2+c3+c4+c5);
 								//分けた文字をあわせたものから始まるwordをリストresultに追加していく
-								if ( word.startsWith(c1+c2+c3+c4+c5)) {
-									result.add(word);	
+								if ( word.matches(c1+c2+c3+c4+c5)) {
+									result.add(word);
 								}
 							}
 						}
